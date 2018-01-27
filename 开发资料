@@ -459,3 +459,6 @@ int main()
 	if (27 == waitKey(0))
 		return 0;
 }+
+
+PCL 
+简介http://www.pclcn.org/study/shownews.php?lang=cn&id=29
