@@ -192,3 +192,5 @@ int main(int argc, char *argv[])
 	NuiShutdown();
 	return 0;
 }
+//遇到问题：error C2589: “(”:“::”右边的非法标记
+//解决：找到问题所在位置，使用std::min或者std::max的时候加上括号，避免与Windows.h中的min、max宏定义冲突。
