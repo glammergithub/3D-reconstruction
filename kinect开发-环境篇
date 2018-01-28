@@ -43,5 +43,10 @@ Kinect10.lib
 解决：将D:\kinect1\opencv\build\x86\vc12\bin下的所有文件复制到目录C:\Windows\System32下
       D:\kinect1\opencv\build\x64\vc12\bin下的所有文件复制到目录C:\Windows\SysWOW64下
 
+PCL  http://blog.csdn.net/u012700322/article/details/51821249
+一、下载配置PCL所需的第三方库
+Boost 1.59.0
+http://www.boost.org/users/history/version_1_59_0.html
+下载微软的MPI
+https://www.microsoft.com/zh-CN/download/details.aspx?id=41634  
 
-         
