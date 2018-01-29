@@ -1,3 +1,5 @@
+形成rgb、depth图像
+
 一、软件：Microsoft Visual Studio ultimate 2013; opencv-2.4.9; .NETframework4.5; KinectSDK-v1.8; KinectDeveloperToolkit-v1.8.0
 二、安装：Kinect SDK 地址默认为C:\Program Files\Microsoft SDKs\Kinect; opencv，.NETframework 我放在目录为D:\kinect1下,opencv下载后要启动形成文件夹
 三、开发环境配置：
@@ -42,11 +44,231 @@ Kinect10.lib
 可能会遇到的问题：缺失文件opencv_core249d.dll等，
 解决：将D:\kinect1\opencv\build\x86\vc12\bin下的所有文件复制到目录C:\Windows\System32下
       D:\kinect1\opencv\build\x64\vc12\bin下的所有文件复制到目录C:\Windows\SysWOW64下
+ 
+ 
+ 
+形成点云图、三维重建
 
-PCL  http://blog.csdn.net/u012700322/article/details/51821249
-一、下载配置PCL所需的第三方库
-Boost 1.59.0
-http://www.boost.org/users/history/version_1_59_0.html
-下载微软的MPI
-https://www.microsoft.com/zh-CN/download/details.aspx?id=41634  
+安装OPENNI
+一、软件：OpenNI-Windows-x86-2.2.0.33
+二、安装：解压、启动后安装在C:\Program Files (x86)\OpenNI2
+三、环境配置：右键计算机-属性-高级系统设置-环境变量-新建-
+1.变量名：OPENNI2_INCLUDE  变量值：C:\Program Files (x86)\OpenNI2\Include
+2.变量名：OPENNI2_LIB  变量值：C:\Program Files (x86)\OpenNI2\Lib
+3.变量名：OPENNI2_REDIST 变量值：C:\Program Files (x86)\OpenNI2\Redist
+4.Path最后加上  ;%OPENNI2_REDIST%
+四、vs2013环境配置：
+这里我在之前建好的项目属性表“opencv249x86.Debug.props”里添加
+1.vc++目录->包含目录->下拉箭头->编辑->新行->添加路径
+C:\Program Files %28x86%29\OpenNI2\Include
+2.库目录->下拉箭头->编辑->新行->添加路径
+C:\Program Files %28x86%29\OpenNI2\Lib
+3.点击C/C++->常规->附加包含目录->
+C:\Program Files %28x86%29\OpenNI2\Include
+4.链接器->输入->附加依赖项->添加文件
+OpenNI2.lib
+如果编译时提示缺少该文件，尝试之前的方法找到该文件，将文件复制到目录C:\Windows\System32
+
+
+安装PCL 
+一、软件：下载PCL 1.8.0的all-in-one
+链接：http://unanancyowen.com/en/pcl18/（需要翻墙），这里我下载的是PCL 1.8.0 All-in-one Installer MSVC2013 Win32
+二、安装：安装在目录D:\PCL，解压
+三、环境配置：右键计算机-属性-高级系统设置-环境变量-新建-
+1.变量名：PCL_ROOT  变量值：D:\PCL\PCL 1.8.0
+2.Path最后加上;%PCL_ROOT%\bin
+四、vs2013环境配置：
+这里我在之前建好的项目属性表“opencv249x86.Debug.props”里添加
+1.vc++目录->包含目录->下拉箭头->编辑->新行->添加路径
+D:\PCL\PCL 1.8.0\include\pcl-1.8
+D:\PCL\PCL 1.8.0\3rdParty\Eigen\eigen3
+D:\PCL\PCL 1.8.0\3rdParty\VTK\include\vtk-7.0
+D:\PCL\PCL 1.8.0\3rdParty\FLANN\include\flann
+D:\PCL\PCL 1.8.0\3rdParty\Qhull\include
+D:\PCL\PCL 1.8.0\3rdParty\Boost\include\boost-1_61
+2.库目录->下拉箭头->编辑->新行->添加路径
+D:\PCL\PCL 1.8.0\lib
+D:\PCL\PCL 1.8.0\3rdParty\Boost\lib
+D:\PCL\PCL 1.8.0\3rdParty\Qhull\lib
+D:\PCL\PCL 1.8.0\3rdParty\FLANN\lib
+D:\PCL\PCL 1.8.0\3rdParty\VTK\lib
+3.链接器->输入->附加依赖项->添加文件
+Debug
+pcl_common_debug.lib
+pcl_features_debug.lib
+pcl_filters_debug.lib
+pcl_io_debug.lib
+pcl_io_ply_debug.lib
+pcl_kdtree_debug.lib
+pcl_keypoints_debug.lib
+pcl_octree_debug.lib
+pcl_outofcore_debug.lib
+pcl_people_debug.lib
+pcl_recognition_debug.lib
+pcl_registration_debug.lib
+pcl_sample_consensus_debug.lib
+pcl_search_debug.lib
+pcl_segmentation_debug.lib
+pcl_surface_debug.lib
+pcl_tracking_debug.lib
+pcl_visualization_debug.lib
+libboost_atomic-vc120-mt-gd-1_61.lib
+libboost_chrono-vc120-mt-gd-1_61.lib
+libboost_container-vc120-mt-gd-1_61.lib
+libboost_context-vc120-mt-gd-1_61.lib
+libboost_coroutine-vc120-mt-gd-1_61.lib
+libboost_date_time-vc120-mt-gd-1_61.lib
+libboost_exception-vc120-mt-gd-1_61.lib
+libboost_filesystem-vc120-mt-gd-1_61.lib
+libboost_graph-vc120-mt-gd-1_61.lib
+libboost_iostreams-vc120-mt-gd-1_61.lib
+libboost_locale-vc120-mt-gd-1_61.lib
+libboost_log-vc120-mt-gd-1_61.lib
+libboost_log_setup-vc120-mt-gd-1_61.lib
+libboost_math_c99-vc120-mt-gd-1_61.lib
+libboost_math_c99f-vc120-mt-gd-1_61.lib
+libboost_math_c99l-vc120-mt-gd-1_61.lib
+libboost_math_tr1-vc120-mt-gd-1_61.lib
+libboost_math_tr1f-vc120-mt-gd-1_61.lib
+libboost_math_tr1l-vc120-mt-gd-1_61.lib
+libboost_mpi-vc120-mt-gd-1_61.lib
+libboost_prg_exec_monitor-vc120-mt-gd-1_61.lib
+libboost_program_options-vc120-mt-gd-1_61.lib
+libboost_random-vc120-mt-gd-1_61.lib
+libboost_regex-vc120-mt-gd-1_61.lib
+libboost_serialization-vc120-mt-gd-1_61.lib
+libboost_signals-vc120-mt-gd-1_61.lib
+libboost_system-vc120-mt-gd-1_61.lib
+libboost_test_exec_monitor-vc120-mt-gd-1_61.lib
+libboost_thread-vc120-mt-gd-1_61.lib
+libboost_timer-vc120-mt-gd-1_61.lib
+libboost_type_erasure-vc120-mt-gd-1_61.lib
+libboost_unit_test_framework-vc120-mt-gd-1_61.lib
+libboost_wave-vc120-mt-gd-1_61.lib
+libboost_wserialization-vc120-mt-gd-1_61.lib
+flann_cpp_s-gd.lib
+flann_s-gd.lib
+flann-gd.lib
+qhull_d.lib
+qhull_p_d.lib
+qhull_r_d.lib
+qhullcpp_d.lib
+qhullstatic_d.lib
+qhullstatic_r_d.lib
+vtkChartsCore-7.0-gd.lib
+vtkCommonColor-7.0-gd.lib
+vtkCommonComputationalGeometry-7.0-gd.lib
+vtkCommonCore-7.0-gd.lib
+vtkCommonDataModel-7.0-gd.lib
+vtkCommonExecutionModel-7.0-gd.lib
+vtkCommonMath-7.0-gd.lib
+vtkCommonMisc-7.0-gd.lib
+vtkCommonSystem-7.0-gd.lib
+vtkCommonTransforms-7.0-gd.lib
+vtkDICOMParser-7.0-gd.lib
+vtkDomainsChemistry-7.0-gd.lib
+vtkFiltersAMR-7.0-gd.lib
+vtkFiltersCore-7.0-gd.lib
+vtkFiltersExtraction-7.0-gd.lib
+vtkFiltersFlowPaths-7.0-gd.lib
+vtkFiltersGeneral-7.0-gd.lib
+vtkFiltersGeneric-7.0-gd.lib
+vtkFiltersGeometry-7.0-gd.lib
+vtkFiltersHybrid-7.0-gd.lib
+vtkFiltersHyperTree-7.0-gd.lib
+vtkFiltersImaging-7.0-gd.lib
+vtkFiltersModeling-7.0-gd.lib
+vtkFiltersParallel-7.0-gd.lib
+vtkFiltersParallelImaging-7.0-gd.lib
+vtkFiltersProgrammable-7.0-gd.lib
+vtkFiltersSMP-7.0-gd.lib
+vtkFiltersSelection-7.0-gd.lib
+vtkFiltersSources-7.0-gd.lib
+vtkFiltersStatistics-7.0-gd.lib
+vtkFiltersTexture-7.0-gd.lib
+vtkFiltersVerdict-7.0-gd.lib
+vtkGeovisCore-7.0-gd.lib
+vtkIOAMR-7.0-gd.lib
+vtkIOCore-7.0-gd.lib
+vtkIOEnSight-7.0-gd.lib
+vtkIOExodus-7.0-gd.lib
+vtkIOExport-7.0-gd.lib
+vtkIOGeometry-7.0-gd.lib
+vtkIOImage-7.0-gd.lib
+vtkIOImport-7.0-gd.lib
+vtkIOInfovis-7.0-gd.lib
+vtkIOLSDyna-7.0-gd.lib
+vtkIOLegacy-7.0-gd.lib
+vtkIOMINC-7.0-gd.lib
+vtkIOMovie-7.0-gd.lib
+vtkIONetCDF-7.0-gd.lib
+vtkIOPLY-7.0-gd.lib
+vtkIOParallel-7.0-gd.lib
+vtkIOParallelXML-7.0-gd.lib
+vtkIOSQL-7.0-gd.lib
+vtkIOVideo-7.0-gd.lib
+vtkIOXML-7.0-gd.lib
+vtkIOXMLParser-7.0-gd.lib
+vtkImagingColor-7.0-gd.lib
+vtkImagingCore-7.0-gd.lib
+vtkImagingFourier-7.0-gd.lib
+vtkImagingGeneral-7.0-gd.lib
+vtkImagingHybrid-7.0-gd.lib
+vtkImagingMath-7.0-gd.lib
+vtkImagingMorphological-7.0-gd.lib
+vtkImagingSources-7.0-gd.lib
+vtkImagingStatistics-7.0-gd.lib
+vtkImagingStencil-7.0-gd.lib
+vtkInfovisCore-7.0-gd.lib
+vtkInfovisLayout-7.0-gd.lib
+vtkInteractionImage-7.0-gd.lib
+vtkInteractionStyle-7.0-gd.lib
+vtkInteractionWidgets-7.0-gd.lib
+vtkNetCDF-7.0-gd.lib
+vtkNetCDF_cxx-7.0-gd.lib
+vtkParallelCore-7.0-gd.lib
+vtkRenderingAnnotation-7.0-gd.lib
+vtkRenderingContext2D-7.0-gd.lib
+vtkRenderingContextOpenGL-7.0-gd.lib
+vtkRenderingCore-7.0-gd.lib
+vtkRenderingFreeType-7.0-gd.lib
+vtkRenderingGL2PS-7.0-gd.lib
+vtkRenderingImage-7.0-gd.lib
+vtkRenderingLIC-7.0-gd.lib
+vtkRenderingLOD-7.0-gd.lib
+vtkRenderingLabel-7.0-gd.lib
+vtkRenderingOpenGL-7.0-gd.lib
+vtkRenderingVolume-7.0-gd.lib
+vtkRenderingVolumeOpenGL-7.0-gd.lib
+vtkViewsContext2D-7.0-gd.lib
+vtkViewsCore-7.0-gd.lib
+vtkViewsInfovis-7.0-gd.lib
+vtkalglib-7.0-gd.lib
+vtkexoIIc-7.0-gd.lib
+vtkexpat-7.0-gd.lib
+vtkfreetype-7.0-gd.lib
+vtkgl2ps-7.0-gd.lib
+vtkhdf5-7.0-gd.lib
+vtkhdf5_hl-7.0-gd.lib
+vtkjpeg-7.0-gd.lib
+vtkjsoncpp-7.0-gd.lib
+vtklibxml2-7.0-gd.lib
+vtkmetaio-7.0-gd.lib
+vtkoggtheora-7.0-gd.lib
+vtkpng-7.0-gd.lib
+vtkproj4-7.0-gd.lib
+vtksqlite-7.0-gd.lib
+vtksys-7.0-gd.lib
+vtktiff-7.0-gd.lib
+vtkverdict-7.0-gd.lib
+vtkzlib-7.0-gd.lib
+
+在编译的时候可能出现问题：编译器中发生内部错误
+提示行为template<class T1, class T2, class... T> using common_type_fold = common_type_t<common_type_t<T1, T2>, T...>;
+问题属于vs2013本身的bug，需要升级update5，现在微软官网的update5已经失效，只能下载集成的update5镜像:
+下载网站：http://blog.csdn.net/changchungaoyuan/article/details/46979845，（约5G）
+
+
+
+ 
 
