@@ -268,7 +268,41 @@ vtkzlib-7.0-gd.lib
 问题属于vs2013本身的bug，需要升级update5，现在微软官网的update5已经失效，只能下载集成的update5镜像:
 下载网站：http://blog.csdn.net/changchungaoyuan/article/details/46979845，（约5G）
 
+在使用PCL ICP算法实现编译的时候，遇到的问题：
+一、error C4996: 'pcl::SAC_SAMPLE_SIZE'
+解决：
+1.打开项目属性页>C/C++>常规>SDL检查(设置为否)
+2.若上面的方法无法解决这个错误，可以打开头文件”model_types.h”，修改其中的代码： 
+namespace pcl
+{
+  const static std::map<pcl::SacModel, unsigned int>
+      PCL_DEPRECATED("This map is deprecated and is kept only to prevent breaking "
+      "existing user code. Starting from PCL 1.8.0 model sample size "
+      "is a protected member of the SampleConsensusModel class")
+  SAC_SAMPLE_SIZE (sample_size_pairs, sample_size_pairs + sizeof (sample_size_pairs) / sizeof (SampleSizeModel));
+}
+namespace pcl
+{
+  const static std::map<pcl::SacModel, unsigned int>
+      //PCL_DEPRECATED("This map is deprecated and is kept only to prevent breaking "
+      //"existing user code. Starting from PCL 1.8.0 model sample size "
+      //"is a protected member of the SampleConsensusModel class")
+  SAC_SAMPLE_SIZE (sample_size_pairs, sample_size_pairs + sizeof (sample_size_pairs) / sizeof (SampleSizeModel));
+}
 
+二、icp.setInputCloud(cloud_out2);这一行改为icp.setInputSource(cloud_out2);
 
- 
-
+三、error C2079: “pcl::KdTreeFLANN<PointT>::param_radius_”使用未定义的 struct“flann::SearchParams”
+这是最棘手的问题，也是如果PCL和OPENCV同时安装的必然出现的问题，是其中的flann文件名冲突导致
+解决办法
+1.http://blog.csdn.net/u011418173/article/details/52614617
+就是把其中目录D:\kinect1\opencv\build\include\opencv2\flann中的flann文件变成名字为flann2再按照网站的方法去搜索一下对应的文件，都改成这个名字
+2.在尝试了上述方法后还是出现同样的问题，网上就没有类似的解决方案了
+终于找到了解决办法==
+问题出现在kdtree_flann.h这个文件中
+我在网上查找了kdtree_flann.h这个源文件（链接：http://docs.pointclouds.org/1.7.0/kdtree__flann_8h_source.html）
+逐行对应发现问题出现在::flann::SearchParams param_k_;这一行上
+改成对应的 boost::shared_ptr<flann::SearchParams> param_k_;
+:flann::SearchParams param_radius_;
+改为boost::shared_ptr<flann::SearchParams> param_radius_;
+然后就OK了哈哈哈
