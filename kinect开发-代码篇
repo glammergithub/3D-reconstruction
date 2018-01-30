@@ -306,7 +306,8 @@ int main ()
 }
 
 基于ICP算法实现的三维重建 参考网站：http://blog.csdn.net/jinshengtao/article/details/48917263
-需要形成三个点云图，分别命名为test_pcda,test_pcdb,test_pcdc
+                                 http://blog.csdn.net/qq_33933704/article/details/78652633
+这里我用的是前一种，需要形成三个点云图，分别命名为test_pcda,test_pcdb,test_pcdc
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
