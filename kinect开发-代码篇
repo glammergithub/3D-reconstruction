@@ -192,6 +192,7 @@ int main(int argc, char *argv[])
 	NuiShutdown();
 	return 0;
 }
+
 //遇到问题：error C2589: “(”:“::”右边的非法标记
 //解决：找到问题所在位置，使用std::min或者std::max的时候加上括号，避免与Windows.h中的min、max宏定义冲突。
 
@@ -329,7 +330,7 @@ int  main(int argc, char** argv)
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr my_cloud2(new pcl::PointCloud<pcl::PointXYZRGB>);
 
 	start = clock();
-	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("pointcloud.pcd", *cloud_in) == -1)//*打开点云文件
+	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("test_pcda.pcd", *cloud_in) == -1)//*打开点云文件
 	{
 		PCL_ERROR("Couldn't read file test_pcd.pcd\n");
 		return(-1);
