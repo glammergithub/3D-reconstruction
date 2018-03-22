@@ -176,3 +176,117 @@ int main(int argc, char** argv)
 	}
 	return 0;
 }
+
+#include <iostream>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <pcl/registration/icp.h>
+#include <pcl/visualization/cloud_viewer.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include <time.h>
+
+int  main(int argc, char** argv)
+{
+	clock_t start, finish;
+	double totaltime;
+
+
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_in(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_out(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_out2(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr my_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr my_cloud2(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+	start = clock();
+	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("./data/pointclouda.pcd", *cloud_in) == -1)//*打开点云文件
+	{
+		PCL_ERROR("Couldn't read file pointclouda.pcd\n");
+		return(-1);
+	}
+	finish = clock();
+	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "\n load pointclouda.pcd data : " << totaltime << "seconds!" << endl;
+
+	start = clock();
+	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("./data/pointcloudb.pcd", *cloud_out) == -1)//*打开点云文件
+	{
+		PCL_ERROR("Couldn't read file pointcloudb.pcd\n");
+		return(-1);
+	}
+	finish = clock();
+	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "\n load pointcloudb.pcd data : " << totaltime << "seconds!" << endl;
+
+	start = clock();
+	if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("./data/pointcloudc.pcd", *cloud_out2) == -1)//*打开点云文件
+	{
+		PCL_ERROR("Couldn't read file pointcloudc.pcd\n");
+		return(-1);
+	}
+	finish = clock();
+	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "\n load pointcloudc.pcd data : " << totaltime << "seconds!" << endl;
+
+	//call icp api
+	start = clock();
+	pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icp;
+	icp.setInputSource(cloud_in);
+	icp.setInputTarget(cloud_out);
+	pcl::PointCloud<pcl::PointXYZRGB> Final;
+	icp.align(Final);
+	std::cout << "has converged:" << icp.hasConverged() << " score: " <<
+		icp.getFitnessScore() << std::endl;
+	std::cout << icp.getFinalTransformation() << std::endl;
+
+	finish = clock();
+	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "\n first time call icp process : " << totaltime << "seconds!" << endl;
+
+	//构造拼接临时的点云
+	for (int i = 0; i< Final.points.size(); i++)
+	{
+		pcl::PointXYZRGB basic_point;
+		basic_point.x = Final.points[i].x;
+		basic_point.y = Final.points[i].y;
+		basic_point.z = Final.points[i].z;
+		basic_point.r = Final.points[i].r;
+		basic_point.g = Final.points[i].g;
+		basic_point.b = Final.points[i].b;
+		my_cloud->points.push_back(basic_point);
+	}
+
+	//call icp api another time
+	start = clock();
+	icp.setInputSource(cloud_out2);
+	icp.setInputTarget(my_cloud);
+	pcl::PointCloud<pcl::PointXYZRGB> Final2;
+	icp.align(Final2);
+	std::cout << "has converged:" << icp.hasConverged() << " score: " <<
+		icp.getFitnessScore() << std::endl;
+	std::cout << icp.getFinalTransformation() << std::endl;
+	finish = clock();
+	totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
+	cout << "\n second time call icp process : " << totaltime << "seconds!" << endl;
+
+	//my_cloud.reset();
+	//构造拼接最终的点云
+	for (int i = 0; i< Final2.points.size(); i++)
+	{
+		pcl::PointXYZRGB basic_point;
+		basic_point.x = Final2.points[i].x;
+		basic_point.y = Final2.points[i].y;
+		basic_point.z = Final2.points[i].z;
+		basic_point.r = Final2.points[i].r;
+		basic_point.g = Final2.points[i].g;
+		basic_point.b = Final2.points[i].b;
+		my_cloud2->points.push_back(basic_point);
+	}
+
+	pcl::visualization::CloudViewer viewer("My First Cloud Viewer");
+	viewer.showCloud(my_cloud2);
+	while (!viewer.wasStopped())
+	{
+
+	}
+	return (0);
+}
